@@ -3,6 +3,18 @@
       <h4>Flight</h4>
       <form>
         <div class="form-group">
+          <label for="startDate">startDate</label>
+          <input type="text" class="form-control" id="startDate"
+            v-model="currentFlight.startDate"
+          />
+        </div>
+        <div class="form-group">
+          <label for="endDate">endDate</label>
+          <input type="text" class="form-control" id="endDate"
+            v-model="currentFlight.endDate"
+          />
+        </div>
+        <div class="form-group">
           <label for="startCity">startCity</label>
           <input type="text" class="form-control" id="startCity"
             v-model="currentFlight.startCity"
@@ -15,6 +27,18 @@
           />
         </div>
       </form>
+      <div class="form-group">
+        <label for="planeCode">Код самолёта</label>
+        <input type="text" class="form-control" id="planeCode"
+          v-model="currentFlight.planeCode"
+        />
+      </div>
+      <div class="form-group">
+        <label for="places">Количество мест</label>
+        <input type="text" class="form-control" id="places"
+          v-model="currentFlight.places"
+        />
+      </div>
     
       <button class="badge badge-danger mr-2"
         @click="deleteFlight"

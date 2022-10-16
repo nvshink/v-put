@@ -2,13 +2,28 @@
     <div class="submit-form">
       <div v-if="!submitted">
         <div class="form-group">
-          <label for="title">Title</label>
-          <input type="text" class="form-control" id="title" required v-model="flight.startCity" name="startCity" />
+          <label for="startDate">Врёмя отлёта</label>
+          <input type="datetime-local" class="form-control" id="startDate" required v-model="flight.startDate" name="startDate" />
         </div>
-  
         <div class="form-group">
-          <label for="description">Description</label>
-          <input class="form-control" id="description" required v-model="flight.endCity" name="endCity" />
+          <label for="endDate">Врёмя прилёта</label>
+          <input type="datetime-local" class="form-control" id="endDate" required v-model="flight.endDate" name="endDate" />
+        </div>
+        <div class="form-group">
+          <label for="startCity">Город отлёта</label>
+          <input type="text" class="form-control" id="startCity" required v-model="flight.startCity" name="startCity" />
+        </div>
+        <div class="form-group">
+          <label for="endCity">Город прилёта</label>
+          <input type="text" class="form-control" id="endCity" required v-model="flight.endCity" name="endCity" />
+        </div>
+        <div class="form-group">
+          <label for="planeCode">Код самолёта</label>
+          <input type="text" class="form-control" id="planeCode" required v-model="flight.planeCode" name="planeCode" />
+        </div>
+        <div class="form-group">
+          <label for="places">Количество мест</label>
+          <input type="number" class="form-control" id="places" required v-model="flight.places" name="places" />
         </div>
   
         <button @click="saveFlight" class="btn btn-success">Submit</button>
@@ -29,12 +44,12 @@
     data() {
       return {
         flight: {    
-          startDate: "2020-05-11T20:14:14.796Z",
+          startDate: "",
           startCity: "",
-          endDate: "2020-05-11T20:14:14.796Z",
+          endDate: "",
           endCity: "",
-          planeCode: "s",
-          places: "s"
+          planeCode: "",
+          places: ""
         },
         submitted: false
       };
@@ -42,12 +57,12 @@
     methods: {
       saveFlight() {
         var data = {
-          startDate: this.flight.startDate,
+          startDate: new Date (this.flight.startDate).toISOString,
           startCity: this.flight.startCity,
-          endDate: this.flight.endDate,
+          endDate: new Date (this.flight.endDate).toISOString,
           endCity: this.flight.endCity,
           planeCode: this.flight.planeCode,
-          places: this.flight.places
+          places: new Array (this.flight.places).fill(true)
         };
   
         FlightsDataService.create(data)
