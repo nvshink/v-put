@@ -24,9 +24,16 @@ class FlightsDataService {
   deleteAll() {
     return http.delete(`/flights`);
   }
-
-  findByTitle(title) {
-    return http.get(`/flights?title=${title}`);
+  //Добавление LiveSearch
+  // search(data){
+  //   return http.post(`/search`, {
+  //     data
+  //   }).then(res => {
+  //     console.log(res);
+  //   });
+  // }
+  findFlights(data) {
+    return http.get(`/flights/search?date=${data.date}&startCity=${data.startCity}&endCity=${data.endCity}`);
   }
 }
 

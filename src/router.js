@@ -5,17 +5,17 @@ const routes =  [
     path: "/",
     alias: "/flights",
     name: "flights",
-    component: () => import("./components/FlightsList")
+    component: () => import("./components/Flights.vue")
   },
   {
     path: "/flights/:id",
     name: "flight-details",
-    component: () => import("./components/Flight")
+    component: () => import("./components/Flight.vue")
   },
   {
     path: "/add",
     name: "add",
-    component: () => import("./components/AddFlight")
+    component: () => import("./components/AddFlight.vue")
   }
 ];
 

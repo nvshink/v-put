@@ -2,20 +2,24 @@
     <div class="submit-form">
       <div v-if="!submitted">
         <div class="form-group">
-          <label for="startDate">Врёмя отлёта</label>
+          <label for="startDate">Дата и время вылета</label>
           <input type="datetime-local" class="form-control" id="startDate" required v-model="flight.startDate" name="startDate" />
         </div>
         <div class="form-group">
-          <label for="endDate">Врёмя прилёта</label>
+          <label for="endDate">Дата и время прилёта</label>
           <input type="datetime-local" class="form-control" id="endDate" required v-model="flight.endDate" name="endDate" />
         </div>
         <div class="form-group">
-          <label for="startCity">Город отлёта</label>
+          <label for="startCity">Город вылета</label>
           <input type="text" class="form-control" id="startCity" required v-model="flight.startCity" name="startCity" />
         </div>
         <div class="form-group">
           <label for="endCity">Город прилёта</label>
           <input type="text" class="form-control" id="endCity" required v-model="flight.endCity" name="endCity" />
+        </div>
+        <div class="form-group">
+          <label for="airline">Авиакомпания</label>
+          <input type="text" class="form-control" id="airline" required v-model="flight.airline" name="airline" />
         </div>
         <div class="form-group">
           <label for="planeCode">Код самолёта</label>
@@ -25,8 +29,12 @@
           <label for="places">Количество мест</label>
           <input type="number" class="form-control" id="places" required v-model="flight.places" name="places" />
         </div>
+        <div class="form-group">
+          <label for="price">Цена</label>
+          <input type="number" class="form-control" id="price" required v-model="flight.price" name="price" />
+        </div>
   
-        <button @click="saveFlight" class="btn btn-success">Submit</button>
+        <button @click="saveFlight" class="btn btn-success">Добавить</button>
       </div>
   
       <div v-else>
@@ -49,7 +57,9 @@
           endDate: "",
           endCity: "",
           planeCode: "",
-          places: ""
+          places: "",
+          airline: "",
+          price: ""
         },
         submitted: false
       };
@@ -57,23 +67,17 @@
     methods: {
       saveFlight() {
         var data = {
-          startDate: new Date (this.flight.startDate).toISOString,
+          startDate: new Date (this.flight.startDate).toISOString(),
           startCity: this.flight.startCity,
-          endDate: new Date (this.flight.endDate).toISOString,
+          endDate: new Date (this.flight.endDate).toISOString(),
           endCity: this.flight.endCity,
           planeCode: this.flight.planeCode,
-          places: new Array (this.flight.places).fill(true)
+          places: new Array (this.flight.places).fill(true),
+          airline: this.flight.airline,
+          price: this.flight.price,
         };
-  
-        FlightsDataService.create(data)
-          .then(response => {
-            this.flight.id = response.data.id;
-            console.log(response.data);
-            this.submitted = true;
-          })
-          .catch(e => {
-            console.log(e);
-          });
+        FlightsDataService.create(data);
+          
       },
   
       newFlight() {

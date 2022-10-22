@@ -3,26 +3,40 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "serveW": "webpack serve",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "buildW": "webpack"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "core-js": "^3.6.5",
     "jquery": "^3.6.0",
     "popper.js": "^1.16.1",
-    "vue": "^3.0.0",
-    "vue-router": "^4.0.6"
+    "vue": "^3.2.36",
+    "vue-router": "^4.0.6",
+    "webpack": "^5.47.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
-    "@vue/compiler-sfc": "^3.0.0",
+    "@vue/compiler-sfc": "^3.2.41",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^7.0.0"
+    "eslint-plugin-vue": "^7.0.0",
+    "html-loader": "^4.2.0",
+    "html-webpack-plugin": "^5.5.0",
+    "mini-css-extract-plugin": "^2.6.1",
+    "node-sass": "^7.0.3",
+    "postcss-preset-env": "^7.8.2",
+    "sass-loader": "^13.1.0",
+    "style-loader": "^3.3.1",
+    "vue-loader": "^17.0.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.11.1"
   },
   "eslintConfig": {
     "root": true,
