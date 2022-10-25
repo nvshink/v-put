@@ -31,6 +31,7 @@ module.exports = {
         new VueLoaderPlugin(),
         new HtmlWebpackPlugin(
             {
+                favicon: "./public/favicon.ico",
                 template: path.resolve(__dirname, 'public', 'index.html')
             }
         ),

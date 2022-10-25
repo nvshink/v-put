@@ -8,7 +8,9 @@ class FlightsDataService {
   get(id) {
     return http.get(`/flights/${id}`);
   }
-
+  unicValuesColumn(data) {
+    return http.get(`/flights/search/cities?request=${data}`);
+  }
   create(data) {
     return http.post("/flights", data);
   }
