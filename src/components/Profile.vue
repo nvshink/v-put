@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     getTickets() {
-      TicketService.getForUser("636cc06b3b4efe509dd1e00d").then(response => {
+      TicketService.getForUser(this.$store.state.auth.user.id).then(response => {
         console.log(response.data);
         this.tickets = response.data
       })
