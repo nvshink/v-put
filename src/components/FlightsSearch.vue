@@ -1,11 +1,85 @@
+<template>
+    <div class="card card-container">
+        <Form @submit="handleSearch" :validation-schema="schema">
+            <div class="form-group">
+                <label for="startDate">Дата вылета</label>
+                <Field name="startDate" type="date" class="form-control" />
+                <ErrorMessage name="startDate" class="error-feedback" />
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="checkboxEndDate" v-model="checkboxEndDate">
+                <label class="form-check-label" for="checkboxEndDate">В обе стороны</label>
+            </div>
+            <div class="form-group">
+                <label for="endDate">Дата возврашения</label>
+                <Field name="endDate" type="date" class="form-control" :validateOnInput="false" :disabled="!checkboxEndDate"/>
+                <ErrorMessage name="endDate" class="error-feedback" />
+            </div>
+            <div class="form-group">
+                <label for="startCity">Место отправления</label>
+                <Field name="startCity" type="text" class="form-control" list="datalistOptionsSC" id="startCity"
+                    required @keyup="liveSearch('startCity')" />
+                <datalist id="datalistOptionsSC">
+                    <option v-for="(result, index) in this.liveSearchResult" :key="index">{{ result }}</option>
+                </datalist>
+                <template v-if="this.liveSearchAttr == 'startCity' && this.liveSearchNoSearch">
+                    <div class="search-item">
+                        <p>Отсюда нет рейсов</p>
+                    </div>
+                </template>
+            </div>
+            <div class="form-group">
+                <label for="endCity">Место прибытия</label>
+                <Field name="endCity" type="text" class="form-control" list="datalistOptionsEC" required
+                    v-model="flight.endCity" @keyup="liveSearch('endCity')" />
+                <datalist id="datalistOptionsEC">
+                    <option v-for="(result, index) in this.liveSearchResult" :key="index">{{ result }}</option>
+                </datalist>
+                <template v-if="this.liveSearchAttr == 'endCity' && this.liveSearchNoSearch">
+                    <div class="search-item">
+                        <p>Туда нет рейсов</p>
+                    </div>
+                </template>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary btn-block" :disabled="loading">
+                    <span v-show="loading" class="spinner-border spinner-border-sm"></span>
+                    <span>Найти</span>
+                </button>
+            </div>
+        </Form>
+        <FlightsList :flights="this.flights">
+        </FlightsList>
+    </div>
+</template>
 <script>
 import FlightsDataService from '../services/FlightsDataService';
 import FlightsList from './FlightsList.vue';
+import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
 
 export default {
+    name: "FlightsSearch",
+    components: {
+        Form,
+        Field,
+        ErrorMessage,
+        FlightsList
+    },
     data() {
+        const schema = yup.object().shape({
+            checkboxEndDate: yup.boolean(),
+            startDate: yup.string().required("startDate is required!"),
+            endDate: yup.string().when("checkboxEndDate", {is: true, then:  yup.string().required("endDate is required!")}),
+            startCity: yup.string().required("startCity is required!"),
+            endCity: yup.string().required("endCity is required!"),
+            
+        });
         return {
-            bothWays: false,
+            loading: false,
+            message: "",
+            schema,
+            checkboxEndDate: false,
             liveSearchResult: [],
             liveSearchNoSearch: true,
             liveSearchAttr: "",
@@ -23,23 +97,21 @@ export default {
         };
     },
     methods: {
-        searchFlights() {
+        handleSearch(request) {
             var data = {
-                date: new Date(this.flight.startDate).toISOString(),
-                startCity: this.flight.startCity,
-                endCity: this.flight.endCity,
+                date: new Date(request.startDate).toISOString(),
+                startCity: request.startCity,
+                endCity: request.endCity,
             };
             FlightsDataService.findFlights(data)
                 .then(response => {
-                    console.log(response.data);
                     this.flights = response.data;
-                    console.log(this.flights);
                 })
                 .catch(e => {
                     console.log(e);
                 });
-            if (this.bothWays) {
-                data.date = new Date(this.flight.endDate).toISOString();
+            if (this.checkboxEndDate) {
+                data.date = new Date(request.endDate).toISOString();
                 data.endCity = [data.startCity, data.startCity = data.endCity][0];
                 FlightsDataService.findFlights(data)
                     .then(response => {
@@ -73,62 +145,7 @@ export default {
                 .catch(e => {
                     console.log(e);
                 });
-        }
+        },
     },
-    components: { FlightsList }
 }
 </script>
-<template>
-    <div class="form-group">
-        <label for="startDate">Дата вылета</label>
-        <input type="date" class="form-control" id="startDate" required v-model="flight.startDate" name="startDate" />
-    </div>
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" v-model="bothWays">
-        <label class="form-check-label" for="flexCheckDefault">
-            В обе стороны
-        </label>
-    </div>
-    <div class="form-group">
-        <label for="endDate">Дата возврашения</label>
-        <input type="date" class="form-control" id="endDate" required v-model="flight.endDate" name="endDate"
-            :disabled="!bothWays" />
-    </div>
-    <div class="form-group">
-        <label for="startCity">Место отправления</label>
-        <input type="text" class="form-control" list="datalistOptionsSC" id="startCity" required
-            v-model="flight.startCity" name="startCity" @change="this.liveSearchResult = []"
-            @keyup="liveSearch('startCity')"/>
-        <datalist id="datalistOptionsSC">
-            <option v-for="(result, index) in this.liveSearchResult" :key="index">{{ result }}</option>
-        </datalist>
-        <template v-if="this.liveSearchAttr == 'startCity' && this.liveSearchNoSearch">
-            <div class="search-item">
-                <p>Отсюда нет рейсов</p>
-            </div>
-        </template>
-    </div>
-    <div class="form-group">
-        <label for="endCity">Место прибытия</label>
-        <input type="text" class="form-control" list="datalistOptionsEC" id="endCity" required v-model="flight.endCity" name="endCity"
-            @change="this.liveSearchResult = []" @keyup="liveSearch('endCity')" />
-        <datalist id="datalistOptionsEC">
-            <option v-for="(result, index) in this.liveSearchResult" :key="index">{{ result }}</option>
-        </datalist>
-        <template v-if="this.liveSearchAttr == 'endCity' && this.liveSearchNoSearch">
-            <div class="search-item">
-                <p>Туда нет рейсов</p>
-            </div>
-        </template>
-    </div>
-    <div class="form-group">
-        <label for="adiltPlaces">Взрослых</label>
-        <input type="number" class="form-control" id="adiltPlaces" required name="adiltPlaces" v-model="flight.placesAdult" />
-    </div>
-    <div class="form-group">
-        <label for="childPlaces">Детей</label>
-        <input type="number" class="form-control" id="childPlaces" required name="childPlaces" v-model="flight.placesChild"/>
-    </div>
-    <button type="submit" class="btn btn-primary" name="search" value="Search" @click="searchFlights">Найти</button>
-    <FlightsList :flights="this.flights" :placesAdult="this.flight.placesAdult" :placesChild="this.flight.placesChild"></FlightsList>
-</template>

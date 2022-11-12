@@ -17,8 +17,9 @@ module.exports = {
     devtool,
     devServer: {
         port: 8081,
-        open: true,
+        open: false,
         hot: true,
+        historyApiFallback: true,
     },
     entry: ['@babel/polyfill', path.resolve(__dirname, 'src', 'main.js')],
     output: {
@@ -32,7 +33,7 @@ module.exports = {
         new HtmlWebpackPlugin(
             {
                 favicon: "./public/favicon.ico",
-                template: path.resolve(__dirname, 'public', 'index.html')
+                template: "./public/index.html"
             }
         ),
         new MiniCssExtractPlugin(
@@ -50,18 +51,20 @@ module.exports = {
                     loaders: {
                         'scss': [
                             'vue-style-loader',
-                            'css-loader',
-                            'sass-loader'
+                            'sass-loader',
+                            'css-loader'
                         ],
                         'sass': [
                             'vue-style-loader',
-                            'css-loader',
-                            'sass-loader?indentedSyntax'
+                            'sass-loader?indentedSyntax',
+                            'css-loader'
                         ]
                     },
                     loaderOptions: {
                         sass: {
-                            prependData: '@import "@assets/styles.scss";'
+                            sassOptions: {
+                                prependData: '@import "@assets/styles.scss";'
+                            }
                         }
                     }
                 }

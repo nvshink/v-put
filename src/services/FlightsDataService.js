@@ -16,6 +16,8 @@ class FlightsDataService {
   }
 
   update(id, data) {
+    console.log(id);
+    console.log(data);
     return http.put(`/flights/${id}`, data);
   }
 
@@ -26,14 +28,6 @@ class FlightsDataService {
   deleteAll() {
     return http.delete(`/flights`);
   }
-  //Добавление LiveSearch
-  // search(data){
-  //   return http.post(`/search`, {
-  //     data
-  //   }).then(res => {
-  //     console.log(res);
-  //   });
-  // }
   findFlights(data) {
     return http.get(`/flights/search?date=${data.date}&startCity=${data.startCity}&endCity=${data.endCity}`);
   }
