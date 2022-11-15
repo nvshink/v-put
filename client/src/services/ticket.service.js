@@ -14,5 +14,11 @@ class TicketService {
   create(data) {
     return http.post("/tickets", data);
   }
+  print(ticketId) {
+    return http.post(`/ticket/print/${ticketId}`);
+  }
+  fetch() {
+    return http.get("/ticket/fetch-pdf", {responseType: 'blop'});
+  }
 }
 export default new TicketService();

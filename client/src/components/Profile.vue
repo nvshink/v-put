@@ -10,9 +10,9 @@
       <strong>Билеты:</strong>
     <ul class="list-group">
       <li class="list-group-item" v-for="ticket in tickets" :key="ticket">
-        <li>Имя: {{ ticket.name }}</li>
-        <li>Место: {{ ticket.place }}</li>
-        <li><button class="btn btn-block btn-primary">Печать</button></li>
+      <li>Имя: {{ ticket.name }}</li>
+      <li>Место: {{ ticket.place }}</li>
+      <li><button class="btn btn-block btn-primary" @click="printTicket(ticket)">Печать</button></li>
       </li>
     </ul>
 
@@ -39,8 +39,25 @@ export default {
   methods: {
     getTickets() {
       TicketService.getForUser(this.$store.state.auth.user.id).then(response => {
-        console.log(response.data);
         this.tickets = response.data
+      })
+        .catch(e => {
+          console.log(e);
+        });
+    },
+    printTicket(ticket) {
+      var iframe = document.createElement('iframe');
+      iframe.style.visibility = 'hidden';
+
+      TicketService.print(ticket._id).then(response => {
+        TicketService.fetch.then(response => {
+          const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+          console.log(response.data);
+          iframe.src = pdfBlob;
+          document.body.appendChild(iframe);
+          iframe.contentWindow.focus();
+          iframe.contentWindow.print();
+        })
       })
         .catch(e => {
           console.log(e);
