@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export default axios.create({
-  baseURL: "https://git.heroku.com/v-put.git",
+  baseURL: "https://v-put.herokuapp.com/api",
   headers: {
     "Content-type": "application/json"
   }
