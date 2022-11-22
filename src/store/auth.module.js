@@ -16,7 +16,6 @@ export const auth = {
           return Promise.resolve(user);
         },
         error => {
-          console.log(':(')
           commit('loginFailure');
           return Promise.reject(error);
         }
@@ -27,7 +26,6 @@ export const auth = {
       commit('logout');
     },
     register({ commit }, user) {
-      console.log(user);
       return AuthService.register(user).then(
         response => {
           commit('registerSuccess');

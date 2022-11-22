@@ -3,7 +3,7 @@
     <header class="jumbotron">
     </header>
     <p>
-      <strong>Поч а:</strong>
+      <strong>Почта:</strong>
       {{ currentUser.email }}
     </p>
     <p>
@@ -22,7 +22,6 @@
   
 <script>
 import TicketService from '../services/ticket.service';
-
 export default {
   name: 'Profile',
   data() {
@@ -46,24 +45,33 @@ export default {
         });
     },
     printTicket(ticket) {
-      var iframe = document.createElement('iframe');
-      iframe.style.visibility = 'hidden';
+      // var iframe = document.createElement('iframe');
+      // iframe.style.visibility = 'hidden';
 
       TicketService.print(ticket._id).then(response => {
-        TicketService.fetch.then(response => {
-          const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-          console.log(response.data);
-          iframe.src = pdfBlob;
-          document.body.appendChild(iframe);
-          iframe.contentWindow.focus();
-          iframe.contentWindow.print();
+        TicketService.fetch().then(res => {
+            const blob = new Blob([res.data], { type: 'application/pdf' });
+            var blobURL = URL.createObjectURL(blob);
+
+            var iframe = document.createElement('iframe'); //load content in an iframe to print later
+            document.body.appendChild(iframe);
+
+            iframe.style.display = 'none';
+            iframe.src = blobURL;
+            iframe.onload = function () {
+              setTimeout(function () {
+                iframe.focus();
+                iframe.contentWindow.print();
+              }, 1);
+            };
         })
-      })
-        .catch(e => {
-          console.log(e);
-        });
+          .catch(e => {
+            console.log(e);
+          });
+      });
     }
   },
+
   mounted() {
     if (!this.currentUser) {
       this.$router.push('/login');

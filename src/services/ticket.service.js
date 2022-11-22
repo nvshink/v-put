@@ -8,7 +8,6 @@ class TicketService {
     return http.get(`/ticket/${id}`);
   }
   getForUser(userId) {
-    console.log(userId);
     return http.get(`/tickets/${userId}`);
   }
   create(data) {
@@ -18,7 +17,7 @@ class TicketService {
     return http.post(`/ticket/print/${ticketId}`);
   }
   fetch() {
-    return http.get("/ticket/fetch-pdf", {responseType: 'blop'});
+    return http.get("/ticket/fetch/pdf",  {responseType: 'blob'});
   }
 }
 export default new TicketService();
