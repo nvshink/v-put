@@ -12,21 +12,19 @@ class FlightsDataService {
     return http.get(`/flights/search/cities?request=${data}`);
   }
   create(data) {
-    return http.post("/flights", data);
+    return http.post("/flights", data,  { headers: authHeader() });
   }
 
   update(id, data) {
-    console.log(id);
-    console.log(data);
-    return http.put(`/flights/${id}`, data);
+    return http.put(`/flights/${id}`, data,  { headers: authHeader() });
   }
 
   delete(id) {
-    return http.delete(`/flights/${id}`);
+    return http.delete(`/flights/${id}`,  { headers: authHeader() });
   }
 
   deleteAll() {
-    return http.delete(`/flights`);
+    return http.delete(`/flights`,  { headers: authHeader() });
   }
   findFlights(data) {
     return http.get(`/flights/search?date=${data.date}&startCity=${data.startCity}&endCity=${data.endCity}`);
