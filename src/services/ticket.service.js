@@ -16,8 +16,8 @@ class TicketService {
   print(ticketId) {
     return http.post(`/ticket/print/${ticketId}`);
   }
-  fetch() {
-    return http.get("/ticket/fetch/pdf",  {responseType: 'blob'});
+  fetch(ticketId) {
+    return http.get(`/ticket/fetch/${ticketId}`, {responseType: 'blob'});
   }
 }
 export default new TicketService();

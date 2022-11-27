@@ -13,7 +13,8 @@
       <li>Имя: {{ ticket.name }}</li>
       <li>Место: {{ ticket.place }}</li>
       <li><button class="btn btn-block btn-primary" @click="printTicket(ticket)">Печать</button></li>
-      </li>
+      <li><button class="btn btn-block btn-primary" @click="saveTicket(ticket)">Скачать</button></li>  
+    </li>
     </ul>
 
     </p>
@@ -22,6 +23,7 @@
   
 <script>
 import TicketService from '../services/ticket.service';
+import {saveAs} from 'file-saver'
 export default {
   name: 'Profile',
   data() {
@@ -45,15 +47,12 @@ export default {
         });
     },
     printTicket(ticket) {
-      // var iframe = document.createElement('iframe');
-      // iframe.style.visibility = 'hidden';
-
       TicketService.print(ticket._id).then(response => {
-        TicketService.fetch().then(res => {
+        TicketService.fetch(ticket._id).then(res => {
             const blob = new Blob([res.data], { type: 'application/pdf' });
             var blobURL = URL.createObjectURL(blob);
 
-            var iframe = document.createElement('iframe'); //load content in an iframe to print later
+            var iframe = document.createElement('iframe');
             document.body.appendChild(iframe);
 
             iframe.style.display = 'none';
@@ -64,6 +63,17 @@ export default {
                 iframe.contentWindow.print();
               }, 1);
             };
+        })
+          .catch(e => {
+            console.log(e);
+          });
+      });
+    },
+    saveTicket(ticket) {
+      TicketService.print(ticket._id).then(response => {
+        TicketService.fetch(ticket._id).then(res => {
+            const blob = new Blob([res.data], { type: 'application/pdf' });
+            saveAs(blob, `Билет ${ticket.name}.pdf`);
         })
           .catch(e => {
             console.log(e);
