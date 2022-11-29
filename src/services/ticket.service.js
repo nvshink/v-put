@@ -14,7 +14,7 @@ class TicketService {
     return http.post("/tickets", data);
   }
   print(ticketId) {
-    return http.post(`/ticket/print/${ticketId}`);
+    return http.post(`/ticket/print/${ticketId}`, {responseType: 'blob'});
   }
   fetch(ticketId) {
     return http.get(`/ticket/fetch/${ticketId}`, {responseType: 'blob'});

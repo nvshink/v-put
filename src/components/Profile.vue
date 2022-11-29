@@ -13,8 +13,8 @@
       <li>Имя: {{ ticket.name }}</li>
       <li>Место: {{ ticket.place }}</li>
       <li><button class="btn btn-block btn-primary" @click="printTicket(ticket)">Печать</button></li>
-      <li><button class="btn btn-block btn-primary" @click="saveTicket(ticket)">Скачать</button></li>  
-    </li>
+      <li><button class="btn btn-block btn-primary" @click="saveTicket(ticket)">Скачать</button></li>
+      </li>
     </ul>
 
     </p>
@@ -23,7 +23,8 @@
   
 <script>
 import TicketService from '../services/ticket.service';
-import {saveAs} from 'file-saver'
+import { saveAs } from 'file-saver'
+const buf = require("buffer/").Buffer;
 export default {
   name: 'Profile',
   data() {
@@ -72,6 +73,7 @@ export default {
     saveTicket(ticket) {
       TicketService.print(ticket._id).then(response => {
         TicketService.fetch(ticket._id).then(res => {
+          console.log(res.data);
             const blob = new Blob([res.data], { type: 'application/pdf' });
             saveAs(blob, `Билет ${ticket.name}.pdf`);
         })
