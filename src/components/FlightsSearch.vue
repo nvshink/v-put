@@ -2,9 +2,7 @@
     <div class="card card-container">
         <Form @submit="handleSearch" :validation-schema="schema">
             <div class="form-group">
-                <label for="startDate">Дата вылета</label>
-                <Field name="startDate" type="date" class="form-control" />
-                <ErrorMessage name="startDate" class="error-feedback" />
+                <CustomInput name="startDate" type="date" label="Дата вылета" v-model="flight.startDate"></CustomInput>
             </div>
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="checkboxEndDate" v-model="checkboxEndDate">
@@ -12,7 +10,8 @@
             </div>
             <div class="form-group">
                 <label for="endDate">Дата возврашения</label>
-                <Field name="endDate" type="date" class="form-control" :validateOnInput="false" :disabled="!checkboxEndDate"/>
+                <Field name="endDate" type="date" class="form-control" :validateOnInput="false"
+                    :disabled="!checkboxEndDate" />
                 <ErrorMessage name="endDate" class="error-feedback" />
             </div>
             <div class="form-group">
@@ -52,9 +51,15 @@
         </FlightsList>
     </div>
 </template>
+<style lang="scss">
+.has-error {
+    border: 2px solid red;
+}
+</style>
 <script>
 import FlightsDataService from '../services/FlightsDataService';
 import FlightsList from './FlightsList.vue';
+import CustomInput from './CustomInput.vue';
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 
@@ -64,16 +69,18 @@ export default {
         Form,
         Field,
         ErrorMessage,
-        FlightsList
+        FlightsList,
+        CustomInput
     },
     data() {
+        var yesterday = new Date()
+        yesterday.setDate(yesterday.getDate()-1);
         const schema = yup.object().shape({
             checkboxEndDate: yup.boolean(),
-            startDate: yup.string().required("startDate is required!"),
-            endDate: yup.string().when("checkboxEndDate", {is: true, then:  yup.string().required("endDate is required!")}),
+            startDate: yup.date().min(yesterday).required(),
+            endDate: yup.date().when("checkboxEndDate", { is: true, then: yup.date().min(new Date ()).required("ss") }),
             startCity: yup.string().required("startCity is required!"),
             endCity: yup.string().required("endCity is required!"),
-            
         });
         return {
             loading: false,
@@ -93,7 +100,6 @@ export default {
                 placesAdult: "",
                 placesChild: "",
             },
-
         };
     },
     methods: {
@@ -106,6 +112,7 @@ export default {
             FlightsDataService.findFlights(data)
                 .then(response => {
                     this.flights = response.data;
+                    console.log(this.flights);
                 })
                 .catch(e => {
                     console.log(e);
