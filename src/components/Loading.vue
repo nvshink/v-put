@@ -1,5 +1,5 @@
 <template>
-    <div class=" d-flex flex-column align-items-center main">
+    <div class=" d-flex flex-column align-items-center l-i-d">
         <div class="loading-icon">
             <svg width="50" height="55" viewBox="0 0 76 72" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -37,7 +37,7 @@
     animation-duration: 3s;
     margin: 40px;
 }
-.main {
-    margin-top: 50%;
+.l-i-d {
+    margin-top: 35vh;
 }
 </style>

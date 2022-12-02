@@ -5,7 +5,9 @@ class FlightsDataService {
   getAll() {
     return http.get("/flights");
   }
-
+  getSome(data) {
+    return http.get(`/flights/some/$`, data);
+  }
   get(id) {
     return http.get(`/flights/${id}`);
   }

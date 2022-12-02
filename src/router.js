@@ -7,18 +7,30 @@ const routes = [
     path: "/",
     name: "home",
     component: Home,
+    meta: {
+      title: "Главная - ищите билеты вместе с нами",
+    }
   },
   {
     path: "/login",
     component: Login,
+    meta: {
+      title: "Вход",
+    }
   },
   {
     path: "/register",
     component: Register,
+    meta: {
+      title: "Регистрация",
+    }
   },
-    {
+  {
     path: "/add",
     name: "add",
+    meta: {
+      title: "Добавить рейс",
+    },
     component: () => import("./components/AddFlight.vue")
   },
   {
@@ -29,20 +41,18 @@ const routes = [
   {
     path: '/profile',
     name: 'profile',
-    // lazy-loaded
+    meta: {
+      title: "Профиль",
+    },
     component: () => import('./components/Profile.vue')
   },
   {
     path: '/admin',
     name: 'admin',
-    // lazy-loaded
+    meta: {
+      title: "Администрирование",
+    },
     component: () => import('./components/BoardAdmin.vue')
-  },
-  {
-    path: '/user',
-    name: 'user',
-    // lazy-loaded
-    component: () => import('./components/BoardUser.vue')
   }
 ];
 

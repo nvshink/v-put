@@ -1,94 +1,66 @@
 <template>
   <div class="container">
-    <header class="jumbotron">
-    </header>
-    <p>
-      <strong>Почта:</strong>
-      {{ currentUser.email }}
-    </p>
-    <p>
-      <strong>Билеты:</strong>
-    <ul class="list-group">
-      <li class="list-group-item" v-for="ticket in tickets" :key="ticket">
-      <li>Имя: {{ ticket.name }}</li>
-      <li>Место: {{ ticket.place }}</li>
-      <li><button class="btn btn-block btn-primary" @click="printTicket(ticket)">Печать</button></li>
-      <li><button class="btn btn-block btn-primary" @click="saveTicket(ticket)">Скачать</button></li>
+    <div class="profile-info rounded-3 d-flex flex-column">
+      <span>Почта: {{ currentUser.email }}</span>
+    </div>
+    <ul class="list-group d-flex flex-row flex-wrap justify-content-center">
+      <li class="list-group-item ticket rounded-3 col-12 col-md-6" v-for="(ticket, index) in tickets" :key="index">
+        <TicketCard :ticket="ticket"></TicketCard>
       </li>
     </ul>
-
-    </p>
   </div>
 </template>
   
 <script>
 import TicketService from '../services/ticket.service';
-import { saveAs } from 'file-saver'
-const buf = require("buffer/").Buffer;
+import TicketCard from './TicketCard.vue';
 export default {
-  name: 'Profile',
+  name: "Profile",
   data() {
     return {
       tickets: []
-    }
+    };
   },
   computed: {
     currentUser() {
       return this.$store.state.auth.user;
     },
-
   },
   methods: {
     getTickets() {
       TicketService.getForUser(this.$store.state.auth.user.id).then(response => {
-        this.tickets = response.data
+        this.tickets = response.data;
       })
         .catch(e => {
           console.log(e);
         });
-    },
-    printTicket(ticket) {
-      TicketService.print(ticket._id).then(response => {
-        TicketService.fetch(ticket._id).then(res => {
-            const blob = new Blob([res.data], { type: 'application/pdf' });
-            var blobURL = URL.createObjectURL(blob);
-
-            var iframe = document.createElement('iframe');
-            document.body.appendChild(iframe);
-
-            iframe.style.display = 'none';
-            iframe.src = blobURL;
-            iframe.onload = function () {
-              setTimeout(function () {
-                iframe.focus();
-                iframe.contentWindow.print();
-              }, 1);
-            };
-        })
-          .catch(e => {
-            console.log(e);
-          });
-      });
-    },
-    saveTicket(ticket) {
-      TicketService.print(ticket._id).then(response => {
-        TicketService.fetch(ticket._id).then(res => {
-          console.log(res.data);
-            const blob = new Blob([res.data], { type: 'application/pdf' });
-            saveAs(blob, `Билет ${ticket.name}.pdf`);
-        })
-          .catch(e => {
-            console.log(e);
-          });
-      });
     }
   },
-
   mounted() {
     if (!this.currentUser) {
-      this.$router.push('/login');
+      this.$router.push("/login");
     }
-    this.getTickets()
-  }
+    this.getTickets();
+  },
+  components: { TicketCard }
 };
 </script>
+
+<style lang="scss">
+@import '../sass/_variables.scss';
+.ticket {
+  margin: 20px 5px
+}
+.list-group-item + .list-group-item {
+  border-top-width: 3px;
+}
+.profile-info {
+  background-color: $blue_main;
+  padding: 10px;
+  margin-bottom: 20px;
+  width: fit-content;
+  span {
+    color: white;
+  }
+}
+</style>
