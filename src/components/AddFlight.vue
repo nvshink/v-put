@@ -3,41 +3,41 @@
     <Loading v-if="isError == false"></Loading>
     <ErrorLogo v-else></ErrorLogo>
   </div>
-  <div class="submit-form" v-else-if="isAdmin">
-    <div v-if="!submitted">
+  <div class="submit-form d-flex flex-column" v-else-if="isAdmin">
+    <div class="main_brd align-self-center" v-if="!submitted">
       <div class="form-group">
         <label for="startDate">Дата и время вылета</label>
-        <input type="datetime-local" class="form-control" id="startDate" required v-model="flight.startDate"
+        <input type="datetime-local" class="form-control type_field" id="startDate" required v-model="flight.startDate"
           name="startDate" />
       </div>
       <div class="form-group">
         <label for="endDate">Дата и время прилёта</label>
-        <input type="datetime-local" class="form-control" id="endDate" required v-model="flight.endDate"
+        <input type="datetime-local" class="form-control type_field" id="endDate" required v-model="flight.endDate"
           name="endDate" />
       </div>
       <div class="form-group">
         <label for="startCity">Город вылета</label>
-        <input type="text" class="form-control" id="startCity" required v-model="flight.startCity" name="startCity" />
+        <input type="text" class="form-control type_field" id="startCity" required v-model="flight.startCity" name="startCity" />
       </div>
       <div class="form-group">
         <label for="endCity">Город прилёта</label>
-        <input type="text" class="form-control" id="endCity" required v-model="flight.endCity" name="endCity" />
+        <input type="text" class="form-control type_field" id="endCity" required v-model="flight.endCity" name="endCity" />
       </div>
       <div class="form-group">
         <label for="airline">Авиакомпания</label>
-        <input type="text" class="form-control" id="airline" required v-model="flight.airline" name="airline" />
+        <input type="text" class="form-control type_field" id="airline" required v-model="flight.airline" name="airline" />
       </div>
       <div class="form-group">
         <label for="planeCode">Код самолёта</label>
-        <input type="text" class="form-control" id="planeCode" required v-model="flight.planeCode" name="planeCode" />
+        <input type="text" class="form-control type_field" id="planeCode" required v-model="flight.planeCode" name="planeCode" />
       </div>
       <div class="form-group">
         <label for="places">Количество мест</label>
-        <input type="number" class="form-control" id="places" required v-model="flight.places" name="places" />
+        <input type="number" class="form-control type_field" id="places" required v-model="flight.places" name="places" />
       </div>
       <div class="form-group">
         <label for="price">Цена</label>
-        <input type="number" class="form-control" id="price" required v-model="flight.price" name="price" />
+        <input type="number" class="form-control type_field" id="price" required v-model="flight.price" name="price" />
       </div>
 
       <button @click="saveFlight" class="btn btn-success">Добавить</button>
@@ -45,7 +45,7 @@
 
     <div v-else>
       <h4>You submitted successfully!</h4>
-      <button class="btn btn-success" @click="newFlight">Add</button>
+      <button class="btn btn-success" @click="newFlight">Добавить</button>
     </div>
   </div>
   <div v-else>
@@ -114,3 +114,17 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+
+.type_field {
+  width: 210px;
+}
+.main_brd {
+ width: fit-content;
+}
+.butt {
+  width: 210px;
+}
+
+</style>

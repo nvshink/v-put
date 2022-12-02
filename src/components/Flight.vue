@@ -1,33 +1,43 @@
 <template>
   <div class="container">
-    <div class="d-flex flex-wrap">
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="d-flex flex-wrap justify-content-center">
       <div class="m-1" v-for="(place, index) in flight.places" :key="index">
-        <button class="btn btn-block"
+        <button class="btn"
           :class="selectedPlaces.includes(index + 1) ? 'place-selected' : (place ? 'place-free' : 'place-taken')"
           :disabled="!place" @click="clickOnPlace(index)">{{ index
               + 1
           }}</button>
       </div>
     </div>
-    <Form class="" v-for="(place, index) in selectedPlaces" :key="index" :validation-schema="schemas">
-      <Field class="form-control" name="place" readonly v-model="passangersData.places[index]"></Field>
-      <div class="form-group">
-        <Field name="name" type="text" placeholder="ФИО" class="form-control" v-model="passangersData.name[index]" />
+    <Form class="mb-3" v-for="(place, index) in selectedPlaces" :key="index" :validation-schema="schemas">
+      <Field class="form-control selected-place-field" name="place" readonly v-model="passangersData.places[index]">
+      </Field>
+      <div class="form-group mt-2">
+        <Field name="name" type="text" placeholder="Ф.И.О." class="form-control" v-model="passangersData.name[index]" />
         <ErrorMessage name="name" class="error-feedback" />
       </div>
-      <div class="form-group">
-        <Field name="adultOrChild" type="n" class="form-select" list="datalistOptionsAdultOrChild" required
-          placeholder="Взрослый/ребёнок" v-model="passangersData.adultOrChild[index]" />
-        <ErrorMessage name="name" class="error-feedback" />
+
+      <div class="input-number d-flex flex-row justify-content-between mt-2">
+
+        <div class="form-group">
+          <Field name="adultOrChild" class="form-select adult-or-child me-auto" list="datalistOptionsAdultOrChild"
+            required placeholder="Возраст" v-model="passangersData.adultOrChild[index]" />
+          <ErrorMessage name="adultOrChild" class="error-feedback" />
+        </div>
+        <div class="d-flex">
+          <div class="form-group">
+            <Field name="series" type="number" placeholder="Серия" class="form-control series"
+              v-model="passangersData.series[index]" />
+          </div>
+          <div class="form-group">
+            <Field name="number" type="number" placeholder="Номер" class="form-control number"
+              v-model="passangersData.number[index]" />
+          </div>
+        </div>
       </div>
-      <div class="form-group">
-        <Field name="series" type="number" placeholder="Серия" class="form-control"
-          v-model="passangersData.series[index]" />
+      <div class="d-flex flex-column">
         <ErrorMessage name="series" class="error-feedback" />
-      </div>
-      <div class="form-group">
-        <Field name="number" type="number" placeholder="Номер" class="form-control"
-          v-model="passangersData.number[index]" />
         <ErrorMessage name="number" class="error-feedback" />
       </div>
     </Form>
@@ -35,9 +45,14 @@
       <option selected>Взрослый</option>
       <option>Ребёнок</option>
     </datalist>
-    <span>Цена {{ takePrice() }}</span>
-    <div class="form-group">
-      <button class="btn btn-primary btn-block" @click="buyTickets">
+    <div class="mt-3">
+      <span>Цена {{ takePrice() }}&#x20bd</span>
+    </div>
+    <div class="form-group mt-3">
+      <button class="btn btn-primary btn-block" :disabled="loading" @click="buyTickets">
+
+        <span v-show="loading" class="spinner-border spinner-border-sm"></span>
+        <span v-show="succesed">Куплено</span>
         <span>Купить</span>
       </button>
     </div>
@@ -54,10 +69,10 @@ export default {
   name: "flight",
   data() {
     const schemas = yup.object().shape({
-      place: yup.string().required("place is required!"),
-      name: yup.string().required("name is required!"),
-      series: yup.string().required("series is required!"),
-      number: yup.string().required("number is required!"),
+      place: yup.string().required("Выберите место"),
+      name: yup.string().required("Введите имя"),
+      series: yup.string().min(4, "Серия содержит больше цифр").max(4, "Серия содержит меньше цифр").required("Введите серию паспорта"),
+      number: yup.string().min(6, "Номер содержит больше цифр").max(6, "Номер содержит меньше цифр").required("Введите номер паспорта"),
     });
     return {
       schemas,
@@ -69,7 +84,8 @@ export default {
         series: [],
         number: [],
       },
-
+      loading: false,
+      succesed: false
     }
   },
   components: {
@@ -96,9 +112,7 @@ export default {
       }
     },
     buyTickets() {
-      console.log('купить');
       for (var i = 0; i < this.passangersData.places.length; i++) {
-        console.log('купить' + i);
         var data = {
           place: this.passangersData.places[i],
           name: this.passangersData.name[i],
@@ -108,27 +122,23 @@ export default {
           userId: this.$store.state.auth.user.id,
           flightId: this.flight._id
         }
-        console.log(data);
         this.createTicket(data);
         this.updateFlights(data);
       }
     },
     createTicket(data) {
-      console.log('обновить пользователя');
       TicketService.create(data)
         .then(response => {
-
-          console.log(response.data);
+          this.succesed = true;
         })
         .catch(e => {
           console.log(e);
         });
     },
     updateFlights(data) {
-      console.log('обновить пользователя');
       FlightsDataService.update(data.flightId, { "place": data.place }).
         then(response => {
-          console.log(response.data);
+          this.message = "Билеты куплены"
         })
         .catch(e => {
           console.log(e);
@@ -152,20 +162,81 @@ export default {
 </script>
   
 <style scoped lang="scss">
+@import '../sass/_variables.scss';
+
+
 .place-free {
-  color: green;
+  color: #257337;
+  background-color: white;
+}
+
+.place-free:hover {
+  color: #257337;
+  background-color: rgb(242, 242, 242);
 }
 
 .place-taken {
-  color: red;
+  color: rgb(82, 82, 82);
+}
+
+.place-taken:hover {
+  color: rgb(82, 82, 82);
+  background-color: white;
+
 }
 
 .place-selected {
-  color: chocolate
+  color: white;
+  background-color: $orng;
 }
+
+.place-selected:hover {
+  color: white;
+  background-color: $orng;
+}
+
 
 .container {
   background-color: white;
+}
+
+.adult-or-child {
+  width: 150px;
+}
+
+.selected-place-field {
+  border: none;
+  cursor: unset;
+  text-align: center;
+}
+
+.selected-place-field:focus {
+  border: none;
+  box-shadow: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.input-number {
+  .series {
+    width: 70px;
+    text-align: center;
+  }
+
+  .number {
+    width: 90px;
+    text-align: center;
+  }
+
 }
 </style>
   

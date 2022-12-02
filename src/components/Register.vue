@@ -1,25 +1,25 @@
 <template>
   <div class="col-md-12">
-    <div class="card card-container">
-      <Form @submit="handleRegister" :validation-schema="schema">
-        <div v-if="!successful">
+    <div class="card-container">
+      <Form @submit="handleRegister" :validation-schema="schema" class="d-flex flex-column">
+        <div class="main_brd align-self-center" v-if="!successful">
           <div class="form-group">
             <label for="email">Электронная почта</label>
-            <Field name="email" type="email" class="form-control" />
+            <Field name="email" type="email" class="form-control type_field" />
             <ErrorMessage name="email" class="error-feedback" />
           </div>
           <div class="form-group">
             <label for="password">Пароль</label>
-            <Field name="password" type="password" class="form-control" />
+            <Field name="password" type="password" class="form-control type_field" />
             <ErrorMessage name="password" class="error-feedback" />
           </div>
-          <div class="form-g roup">
+          <div class="form-group">
             <label for="password-confirm">Повторите пароль</label>
-            <Field name="passwordConf" type="password" class="form-control" />
+            <Field name="passwordConf" type="password" class="form-control type_field" />
             <ErrorMessage name="passwordConf" class="error-feedback" />
           </div>
           <div class="form-group">
-            <button class="btn btn-primary btn-block" type="submit" :disabled="loading">
+            <button class="btn btn-primary btn-block mt-4 butt" type="submit" :disabled="loading">
               <span v-show="loading" class="spinner-border spinner-border-sm"></span>
               Sign Up
             </button>
@@ -49,18 +49,18 @@ export default {
     const schema = yup.object().shape({
       email: yup
         .string()
-        .required("Email is required!")
-        .email("Email is invalid!")
-        .max(50, "Must be maximum 50 characters!"),
+        .required("Введите Email")
+        .email("Email неверный")
+        .max(50, "Не больше 50 символов"),
       password: yup
         .string()
-        .required("Password is required!")
-        .min(6, "Must be at least 6 characters!")
-        .max(40, "Must be maximum 40 characters!"),
+        .required("Введите пароль")
+        .min(6, "Минимум 6 символов")
+        .max(40, "Не больше 40 символов"),
       passwordConf: yup
         .string()
-        .required("Password confirm is required!")
-        .oneOf([yup.ref('password'), null], 'Passwords must match'),
+        .required("Подтвердите пароль")
+        .oneOf([yup.ref('password'), null], 'Пароли не совпадают'),
     });
 
     return {
