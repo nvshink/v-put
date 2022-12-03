@@ -19,7 +19,7 @@ class FlightsDataService {
   }
 
   update(id, data) {
-    return http.put(`/flights/${id}`, data,  { headers: authHeader() });
+    return http.put(`/flights/update?id=${id}&place=${data.place}`,  { headers: authHeader() });
   }
 
   delete(id) {
