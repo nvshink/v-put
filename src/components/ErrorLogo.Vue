@@ -1,5 +1,5 @@
 <template>
-    <div class=" d-flex flex-column align-items-center main">
+    <div class=" d-flex flex-column align-items-center e-l">
         <div>
             <svg width="225" height="176" viewBox="0 0 225 176" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -36,7 +36,5 @@
     </div>
 </template>
 <style lang="scss" scoped>
-.main {
-    margin-top: 50%;
-}
+
 </style>

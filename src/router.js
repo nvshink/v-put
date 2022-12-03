@@ -36,6 +36,9 @@ const routes = [
   {
     path: "/flights/:id",
     name: "flight",
+    meta: {
+      title: "Покупка билета",
+    },
     component: () => import("./components/Flight.vue")
   },
   {

@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-    <div class="d-flex flex-wrap justify-content-center">
+    <div v-if="message.length == 0" class=" col-12 offset-0 col-md-8 offset-md-2 col-xxl-6 offset-xxl-3">
+    <div class="d-flex flex-wrap justify-content-center" v-for="flight in flights" :key="flight">
       <div class="m-1" v-for="(place, index) in flight.places" :key="index">
         <button class="btn"
           :class="selectedPlaces.includes(index + 1) ? 'place-selected' : (place ? 'place-free' : 'place-taken')"
@@ -56,6 +56,10 @@
         <span>Купить</span>
       </button>
     </div>
+    </div>
+    <div v-else class="d-flex justify-content-center">
+      <span>{{message}}</span>
+    </div>
   </div>
 </template>
   
@@ -75,6 +79,7 @@ export default {
       number: yup.string().min(6, "Номер содержит больше цифр").max(6, "Номер содержит меньше цифр").required("Введите номер паспорта"),
     });
     return {
+      flights: [],
       schemas,
       selectedPlaces: [],
       passangersData: {
@@ -85,7 +90,8 @@ export default {
         number: [],
       },
       loading: false,
-      succesed: false
+      succesed: false,
+      message : ""
     }
   },
   components: {
@@ -93,7 +99,6 @@ export default {
     Field,
     ErrorMessage
   },
-  props: ['flight'],
   methods: {
     clickOnPlace(index) {
       if (this.selectedPlaces.includes(index + 1)) {
@@ -120,7 +125,7 @@ export default {
           series: this.passangersData.series[i],
           number: this.passangersData.number[i],
           userId: this.$store.state.auth.user.id,
-          flightId: this.flight._id
+          flightId: this.$route.params.id
         }
         this.createTicket(data);
         this.updateFlights(data);
@@ -136,7 +141,7 @@ export default {
         });
     },
     updateFlights(data) {
-      FlightsDataService.update(data.flightId, { "place": data.place }).
+      FlightsDataService.update(this.$route.params.id, data).
         then(response => {
           this.message = "Билеты куплены"
         })
@@ -151,12 +156,19 @@ export default {
         var p = 0;
         for (var i = 0; i < this.passangersData.adultOrChild.length; i++) {
           var n;
-          n = (this.passangersData.adultOrChild[i] == "Взрослый") ? this.flight.price : (this.flight.price * 0.75);
+          n = (this.passangersData.adultOrChild[i] == "Взрослый") ? this.flights[0].price : (this.flights[0].price * 0.75);
           p = p + n;
         }
         return p
       }
+    },
+    getFlight(id){
+      FlightsDataService.get(id).then(response =>{
+        this.flights[0] = response.data;
+      });
     }
+  }, mounted() {
+    this.getFlight(this.$route.params.id);
   }
 }
 </script>

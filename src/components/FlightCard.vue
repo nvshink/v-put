@@ -2,13 +2,15 @@
     <div class="d-flex flex-row">
         <div class="col-3 d-flex flex-column align-items-center">
             <span>{{ flight.startCity }}</span>
-
-            <span class="time">{{ new Date(flight.startDate).getHours() }}:{{ new Date(flight.startDate).getMinutes() }}</span>
-            <span class="date">{{ new Date(flight.startDate).getDate() }}.{{ new Date(flight.startDate).getMonth() }}</span>
+            <span class="time">{{ new Date(flight.startDate).getHours() }}:{{ new Date(flight.startDate).getMinutes()
+            }}</span>
+            <span class="date">{{ new Date(flight.startDate).getDate() }}.{{ new Date(flight.startDate).getMonth()
+            }}</span>
         </div>
         <div class="col-3 d-flex flex-column align-items-center">
             <span>{{ flight.endCity }}</span>
-            <span class="time">{{ new Date(flight.endDate).getHours() }}:{{ new Date(flight.endDate).getMinutes() }}</span>
+            <span class="time">{{ new Date(flight.endDate).getHours() }}:{{ new Date(flight.endDate).getMinutes()
+            }}</span>
             <span class="date">{{ new Date(flight.endDate).getDate() }}.{{ new Date(flight.endDate).getMonth() }}</span>
         </div>
         <div class="col-6 d-flex flex-column align-items-end">
@@ -17,33 +19,26 @@
         </div>
     </div>
     <div class="d-flex justify-content-center" v-if="!this.currentUser">
-        <button type="button" class="btn btn-primary rounded-3 buy" data-bs-toggle="modal"
-            data-bs-target="#exampleModal">
-            Войти для покупки
+        <button type="button" class="btn btn-primary rounded-3 buy">
+            <router-link to="/login" class="nav-link">
+                Войти для покупки
+            </router-link>
         </button>
     </div>
     <div class="d-flex justify-content-center" v-else-if="this.currentUser['roles'].includes('ROLE_USER')">
-        <button type="button" class="btn btn-primary rounded-3 buy" data-bs-toggle="modal"
-            data-bs-target="#exampleModal">
-            Купить
+        <button type="button" class="btn btn-primary rounded-3 buy">
+            <router-link :to="toRouterLink" class="nav-link">
+                Купить
+            </router-link>
         </button>
     </div>
     <div class="d-flex justify-content-center" v-else-if="this.currentUser['roles'].includes('ROLE_ADMIN')">
         <button type="button" class="btn rounded-3 buy me-sm-3" @click="deleteFlight(flight._id)">
             Удалить
         </button>
-        <button type="button" class="btn rounded-3 buy ms-sm-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button type="button" class="btn rounded-3 buy ms-sm-3" data-bs-toggle="modal">
             Редактировать
         </button>
-    </div>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <Flight :flight="flight"></Flight>
-                </div>
-            </div>
-        </div>
     </div>
 </template>
 
@@ -52,7 +47,16 @@ import Flight from './Flight.vue';
 import FlightsDataService from '../services/FlightsDataService';
 export default {
     props: ["flight"],
+    data() {
+        return {
+            toRouterLink: ""
+        }
+    },
     methods: {
+        getRouterLink() {
+            console.log(`/flights/${this.flight._id}`)
+            this.toRouterLink = `/flights/${this.flight._id}`;
+        },
         convertToUTCString(date) {
             var options = {
                 year: "numeric",
@@ -88,6 +92,9 @@ export default {
                 });
         }
     },
+    mounted() {
+        this.getRouterLink()
+    },
     computed: {
         currentUser() {
             return this.$store.state.auth.user;
@@ -102,17 +109,21 @@ export default {
     margin: 15px 0;
     color: white;
 }
+
 span {
-    color: rgba( 0, 0, 0, 0.7);
+    color: rgba(0, 0, 0, 0.7);
     font-weight: 500;
     font-size: 24px;
 }
+
 .time {
     font-weight: 700;
 }
+
 .date {
     font-size: 20px;
 }
+
 .price {
     font-size: 36px;
 }
