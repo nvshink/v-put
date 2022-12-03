@@ -1,19 +1,19 @@
 <template>
     <div class="d-flex flex-row">
-        <div class="col-3 d-flex flex-column align-items-center">
+        <div class="col-6 col-md-3 d-flex flex-column align-items-center">
             <span>{{ flight.startCity }}</span>
             <span class="time">{{ new Date(flight.startDate).getHours() }}:{{ new Date(flight.startDate).getMinutes()
             }}</span>
             <span class="date">{{ new Date(flight.startDate).getDate() }}.{{ new Date(flight.startDate).getMonth()
             }}</span>
         </div>
-        <div class="col-3 d-flex flex-column align-items-center">
+        <div class="col-6 col-md-3 d-flex flex-column align-items-center">
             <span>{{ flight.endCity }}</span>
             <span class="time">{{ new Date(flight.endDate).getHours() }}:{{ new Date(flight.endDate).getMinutes()
             }}</span>
             <span class="date">{{ new Date(flight.endDate).getDate() }}.{{ new Date(flight.endDate).getMonth() }}</span>
         </div>
-        <div class="col-6 d-flex flex-column align-items-end">
+        <div class="col-12 col-md-6 d-flex flex-column align-items-end">
             <span>{{ flight.airline }}</span>
             <span class="mt-auto price">{{ flight.price }} &#x20bd</span>
         </div>
