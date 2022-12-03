@@ -87,7 +87,6 @@ export default {
                     iframe.src = blobURL;
                     iframe.onload = function () {
                         setTimeout(function () {
-                            iframe.download = "билет.pdf"
                             iframe.focus();
                             iframe.contentWindow.print();
                         }, 1);
