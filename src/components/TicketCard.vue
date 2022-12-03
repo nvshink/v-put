@@ -20,11 +20,13 @@
     </div>
     <div class="d-flex justify-content-start">
         <span class="col-8 mt-auto">{{ ticket.name }}</span>
-        <button type="button" class="col-2 btn rounded-3 print-download ms-auto me-sm-3 d-flex justify-content-center" @click="printTicket(ticket)">
-            <img src="./assets/print.svg"/>
+        <button type="button" class="col-2 btn rounded-3 print-download ms-auto me-sm-3 d-flex justify-content-center"
+            @click="printTicket(ticket)">
+            <img src="./assets/print.svg" />
         </button>
-        <button type="button" class="col-2 btn rounded-3 print-download d-flex justify-content-center" @click="saveTicket(ticket)">
-            <img src="./assets/download.svg"/>
+        <button type="button" class="col-2 btn rounded-3 print-download d-flex justify-content-center"
+            @click="saveTicket(ticket)">
+            <img src="./assets/download.svg" />
         </button>
     </div>
 </template>
@@ -32,7 +34,7 @@
 <script>
 import FlightsDataService from '../services/FlightsDataService';
 import TicketService from '../services/ticket.service';
-import { saveAs } from 'file-saver'
+//import { saveAs } from 'file-saver'
 export default {
     props: ["ticket"],
     data() {
@@ -60,6 +62,20 @@ export default {
                 console.log(e);
             });
         },
+        saveAs(content, fileName) {
+            const a = document.createElement("a");
+            const isBlob = content.toString().indexOf("Blob") > -1;
+            let url = content;
+            if (isBlob) {
+                url = window.URL.createObjectURL(content);
+            }
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            if (isBlob) {
+                window.URL.revokeObjectURL(url);
+            }
+        },
         printTicket(ticket) {
             TicketService.print(ticket._id).then(response => {
                 TicketService.fetch(ticket._id).then(res => {
@@ -71,6 +87,7 @@ export default {
                     iframe.src = blobURL;
                     iframe.onload = function () {
                         setTimeout(function () {
+                            iframe.download = "билет.pdf"
                             iframe.focus();
                             iframe.contentWindow.print();
                         }, 1);
@@ -85,7 +102,7 @@ export default {
             TicketService.print(ticket._id).then(response => {
                 TicketService.fetch(ticket._id).then(res => {
                     const blob = new Blob([res.data], { type: "application/pdf" });
-                    saveAs(blob, `Билет ${ticket.name}.pdf`);
+                    this.saveAs(blob, `Билет ${ticket.name}.pdf`);
                 })
                     .catch(e => {
                         console.log(e);
@@ -113,6 +130,7 @@ export default {
     min-height: 38px;
     margin: 10px 0;
 }
+
 .print-download:hover {
     background-color: $blue_main;
 }
